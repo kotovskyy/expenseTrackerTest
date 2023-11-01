@@ -46,7 +46,7 @@ class Category(models.Model):
         default=EXPENSE
     )
     total = models.DecimalField(
-        max_digits=None,
+        max_digits=22,
         decimal_places=2
     )
     
@@ -73,7 +73,7 @@ class Account(models.Model):
         max_length=50
     )
     balance = models.DecimalField(
-        max_digits=None,
+        max_digits=22,
         decimal_places=2
     )
     currency = models.ForeignKey(
@@ -116,7 +116,7 @@ class Transaction(models.Model):
         default=EXPENSE
     )
     amount = models.DecimalField(
-        max_digits=None,
+        max_digits=22,
         decimal_places=2
     )
     date = models.DateField(
