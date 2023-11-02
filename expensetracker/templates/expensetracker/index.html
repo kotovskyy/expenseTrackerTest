@@ -2,16 +2,33 @@
 
 {% block body %}
 
-<h1>Welcome back!</h1>
-<h2>Your personal expense tracker:</h2>
+<h1>Welcome!</h1>
+<h2>Your personal expense tracker is here:</h2>
 
 <div>
-    Accounts:
-    {% for account in accounts %}
-        <div>
-            {{ account }}
-        </div>
-    {% endfor %}
+    With this app you can:
+    <ul>
+        <li>
+            <div>
+                Keep track of your personal expenses and income
+            </div>
+        </li>
+
+        <li>
+            <div>
+                Divide expenses and income by category 
+            </div>
+        </li>
+
+        <li>
+            <div>
+                Have All of your accounts in one place
+            </div>
+        </li>
+    </ul>
 </div>
+
+<a href="">Login</a>
+<a href="">Sign up</a>
 
 {% endblock %}
