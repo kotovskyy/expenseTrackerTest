@@ -2,6 +2,16 @@
 
 {% block body %}
 
-<h1>Welcome to the index page of your website!</h1>
+<h1>Welcome back!</h1>
+<h2>Your personal expense tracker:</h2>
+
+<div>
+    Accounts:
+    {% for account in accounts %}
+        <div>
+            {{ account }}
+        </div>
+    {% endfor %}
+</div>
 
 {% endblock %}
