@@ -23,6 +23,9 @@ class Settings(models.Model):
         choices=MAIN_CURRENCY_CHOICES,
         default=USD
     )
+    
+    def __str__(self) -> str:
+        return f"Main currency: {self.main_currency}"
 
 
 class Category(models.Model):
@@ -50,6 +53,9 @@ class Category(models.Model):
         decimal_places=2
     )
     
+    def __str__(self) -> str:
+        return f"{self.name} - {self.total}"
+    
     
 class Currency(models.Model):
     code = models.CharField(
@@ -61,6 +67,9 @@ class Currency(models.Model):
         unique=True
     )
     exchange_rates = models.JSONField()
+    
+    def __str__(self) -> str:
+        return f"{self.code}    {self.name}"
 
 
 class Account(models.Model):
@@ -84,6 +93,9 @@ class Account(models.Model):
     description = models.CharField(
         max_length=100
     )
+    
+    def __str__(self) -> str:
+        return f"{self.name} - {self.balance} {self.currency.code}"
     
     
 class Transaction(models.Model):
@@ -125,3 +137,13 @@ class Transaction(models.Model):
     description = models.CharField(
         max_length=100
     )
+    
+    def __str__(self) -> str:
+        amount_sign = "-"
+        if self.transaction_type == self.INCOME:
+            amount_sign = "+"
+        elif self.transaction_type == self.TRANSFER:
+            amount_sign = ""
+            
+        return f"{self.category.name} {self.account.name} \
+{amount_sign + self.amount} {self.description}"
