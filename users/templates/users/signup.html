@@ -1,0 +1,33 @@
+{% extends 'expensetracker/layout.html' %}
+
+{% block body %}
+
+    {% if message %}
+        <div>
+            {{ message }}
+        </div>
+    {% endif %}
+
+    <h2>Sign Up:</h2>
+    
+    <form action="{% url 'users_user-signup' %}" method="post">
+        {% csrf_token %}
+
+        {% for field in form %}
+            <div class="signup-form-field">
+                <p>
+                    {% if field.errors %}
+                        <ul class="signup-error-list">
+                            {% for error in field.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    {{ field.label_tag }} {{ field }}
+                </p>
+            </div> 
+        {% endfor %}
+        <input type="submit" value="Login">
+    </form>
+
+{% endblock %}
