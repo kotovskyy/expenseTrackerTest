@@ -2,6 +2,12 @@ from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
 from django.http import HttpResponseRedirect, HttpResponse
+from django.contrib import messages
+
+from django.contrib.auth.forms import UserCreationForm
+from expensetracker.models import User
+
+from users.forms import SignupForm
 
 # Create your views here.
 def index(request):
@@ -27,4 +33,24 @@ def user_logout(request):
     logout(request)
     return render(request, "users/login.html", context={
         "message": "You have been logged out successfully",
+    })
+    
+def user_signup(request):
+    if request.method == "POST":
+        form = SignupForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.username = user.username.lower()
+            user.save()
+            messages.success(request,"You have signed up successfully!")
+            login(request, user)
+            return HttpResponseRedirect(reverse('expensetracker_index'))
+        else:
+            return render(request, "users/signup.html", {
+                "form" : form,
+            })
+        
+    form = SignupForm()
+    return render(request, "users/signup.html", {
+        "form" : form,
     })
