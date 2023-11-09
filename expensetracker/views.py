@@ -29,6 +29,7 @@ def homepage(request):
 def category_page(request, category_id):
     user = request.user
     category = Category.objects.get(id=category_id)
+    transactions = Transaction.objects.filter(user=user, category=category)
     if request.method == "POST":
         form = AddTransactionForm(user, request.POST)
         if form.is_valid():
@@ -62,11 +63,13 @@ def category_page(request, category_id):
         else:
             return render(request, 'expensetracker/category.html', context={
                 "category": category,
-                "form": form
+                "form": form,
+                "transactions": transactions,
             })
                    
     form = AddTransactionForm(user=user)
     return render(request, 'expensetracker/category.html', context={
         "category": category,
-        "form": form
+        "form": form,
+        "transactions": transactions, 
     })

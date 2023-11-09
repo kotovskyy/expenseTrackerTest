@@ -4,7 +4,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="{% static 'expensetracker/homepage.css' %}">
+        <link rel="stylesheet" href="{% static 'expensetracker/category_page.css' %}">
         <title>Expense Tracker</title>
     </head>
     <body>
@@ -24,8 +24,49 @@
                     {{ field.label_tag }} {{ field }}
                 </p>
             </div> 
-        {% endfor %}
-        <input type="submit" value="Add">
+            {% endfor %}
+            <input type="submit" value="Add">
         </form>
+
+        <hr>
+
+        <h2>Transactions:</h2>
+        <div class="category-transactions-container-outer">
+
+            {% for transaction in transactions %}
+
+            <div class="category-transaction-container-inner">
+
+                <div class="transaction-data-container">
+
+                    <div class="transaction-category-icon">
+                        <img class="category-icon" src="{% static 'svg/bus-front.svg' %}" alt="Example category image">
+                    </div>
+
+                    <div class="transaction-category-account">
+
+                        <div class="transaction-category-name">
+                            {{ category.name }}
+                        </div>
+
+                        <div class="transaction-account-name">
+                            {{ transaction.account.name }}
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="transaction-amount-container">
+                    {{ transaction.amount }} {{ transaction.currency.code }}
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+
     </body>
 </html>
