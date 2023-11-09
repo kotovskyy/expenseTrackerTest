@@ -4,6 +4,21 @@ from django.contrib.auth.models import User
 import datetime
 
 # Create your models here.
+class Currency(models.Model):
+    code = models.CharField(
+        max_length=3,
+        unique=True
+    )
+    name = models.CharField(
+        max_length=40,
+        unique=True
+    )
+    exchange_rates = models.JSONField()
+    
+    def __str__(self) -> str:
+        return f"{self.code}    {self.name}"
+
+
 class Settings(models.Model):
     USD = "USD"
     PLN = "PLN"
@@ -18,10 +33,15 @@ class Settings(models.Model):
         on_delete=models.CASCADE,
         related_name="settings"
     )
-    main_currency = models.CharField(
-        max_length=3,
-        choices=MAIN_CURRENCY_CHOICES,
-        default=USD
+    # main_currency = models.CharField(
+    #     max_length=3,
+    #     choices=MAIN_CURRENCY_CHOICES,
+    #     default=USD
+    # )
+    main_currency = models.ForeignKey(
+        Currency,
+        on_delete=models.PROTECT,
+        default=1
     )
     
     def __str__(self) -> str:
@@ -56,22 +76,6 @@ class Category(models.Model):
     def __str__(self) -> str:
         return f"{self.name} - {self.total}"
     
-    
-class Currency(models.Model):
-    code = models.CharField(
-        max_length=3,
-        unique=True
-    )
-    name = models.CharField(
-        max_length=40,
-        unique=True
-    )
-    exchange_rates = models.JSONField()
-    
-    def __str__(self) -> str:
-        return f"{self.code}    {self.name}"
-
-
 class Account(models.Model):
     user = models.ForeignKey(
         User,
@@ -131,6 +135,11 @@ class Transaction(models.Model):
         max_digits=22,
         decimal_places=2
     )
+    currency = models.ForeignKey(
+        Currency,
+        on_delete=models.PROTECT,
+        default=1
+    )
     date = models.DateField(
         default=datetime.date.today
     )
@@ -146,4 +155,4 @@ class Transaction(models.Model):
             amount_sign = ""
             
         return f"{self.category.name} {self.account.name} \
-{amount_sign + self.amount} {self.description}"
+{amount_sign + str(self.amount)} {self.description}"
