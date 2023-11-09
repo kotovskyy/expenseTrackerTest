@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 from .models import Account, Category, Settings, Transaction
 
@@ -27,25 +27,45 @@ def homepage(request):
     })
     
 def category_page(request, category_id):
+    user = request.user
     category = Category.objects.get(id=category_id)
     if request.method == "POST":
-        form = AddTransactionForm(request.POST)
-        amount = form["amount"]
-        date = form.date
-        description = form.description
-        user = request.user
-        account_name = form.account
-        account = user.accounts.objects.filter(name=account_name)
-        
-        # transaction = Transaction()
-        
-        account.balance = account.balance - amount
-        account.save()
-        category.total += amount
-        category.save()
-        
-    
-    form = AddTransactionForm()
+        form = AddTransactionForm(user, request.POST)
+        if form.is_valid():
+            amount = form.cleaned_data["amount"]
+            date = form.cleaned_data["date"]
+            description = form.cleaned_data["description"]
+            account_id = form.cleaned_data["account"]
+            account = user.accounts.filter(id=account_id).first()
+            
+            transaction = Transaction.objects.create(
+                user=user,
+                account=account,
+                category=category,
+                transaction_type=category.category_type,
+                amount=amount,
+                currency=user.settings.first().main_currency,
+                date=date,
+                description=description
+            )
+            
+            if category.category_type == 'E':
+                account.balance -= amount
+            else:
+                account.balance += amount
+            
+            category.total += amount
+            
+            account.save()
+            category.save()
+            
+        else:
+            return render(request, 'expensetracker/category.html', context={
+                "category": category,
+                "form": form
+            })
+                   
+    form = AddTransactionForm(user=user)
     return render(request, 'expensetracker/category.html', context={
         "category": category,
         "form": form
