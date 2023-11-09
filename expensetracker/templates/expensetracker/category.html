@@ -1,0 +1,31 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="{% static 'expensetracker/homepage.css' %}">
+        <title>Expense Tracker</title>
+    </head>
+    <body>
+        This is a page for {{ category.name }} category. Total: {{ category.total }}.
+        <form action="{% url 'expensetracker_category-page' category.id %}" method="post">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="signup-form-field">
+                <p>
+                    {% if field.errors %}
+                        <ul class="signup-error-list">
+                            {% for error in field.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    {{ field.label_tag }} {{ field }}
+                </p>
+            </div> 
+        {% endfor %}
+        <input type="submit" value="Add">
+        </form>
+    </body>
+</html>

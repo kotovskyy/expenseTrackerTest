@@ -1,0 +1,67 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="{% static 'expensetracker/homepage.css' %}">
+        <title>Expense Tracker</title>
+    </head>
+    <body>
+        <div id="main-container">
+
+            <div id="main-navigation-container">
+                <div></div>
+                <div class="navigation-menu-container">
+                    <div class="navigation-link-container">
+                        <a class="navigation-link" href="">Categories</a>
+                   </div>
+                   <div class="navigation-link-container">
+                      <a class="navigation-link" href="">Accounts</a>
+                   </div>
+                   <div class="navigation-link-container">
+                      <a class="navigation-link" href="">Transactions</a>
+                   </div>
+                </div>
+
+                <div class="logout-menu-container">
+                    <a class="navigation-link" href="{% url 'users_user-logout' %}">Logout</a>
+                </div>
+            </div>
+            
+
+            <div id="main-categories-container">
+                
+                {% for category in categories %}
+                    <a href="{% url 'expensetracker_category-page' category.id %}">
+                        <div class="categories-grid-item">
+                            <div class="category-cell-name">
+                                {{ category.name }}
+                            </div>
+                            <div class="category-cell-icon-container">
+                                <img class="category-cell-icon" src="{% static 'svg/bus-front.svg' %}" alt="Example cat image"> 
+                            </div>
+                            <div class="category-cell-total">
+                                {{ category.total }} {{ settings.main_currency.code }}
+                            </div>
+                        </div>
+                    </a>
+
+                {% endfor %}
+                
+                <div class="central-informational-container">
+                    <div class="central-informational-container-inner">
+                        <div class="central-informational-number total-spent-amount">
+                            {{ total_expenses }}
+                        </div>
+                        <div class="central-informational-number total-income-amount">
+                            {{ total_income }}
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+
+        </div>
+    </body>
+</html>
