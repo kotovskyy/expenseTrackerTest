@@ -22,7 +22,7 @@ def user_login(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return HttpResponseRedirect(reverse('expensetracker_index'))
+            return HttpResponseRedirect(reverse('expensetracker_homepage'))
         else:
             return render(request, "users/login.html", context={
                 "message": "Invalid username or password",
