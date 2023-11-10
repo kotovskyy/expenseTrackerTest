@@ -73,3 +73,12 @@ def category_page(request, category_id):
         "form": form,
         "transactions": transactions, 
     })
+    
+def accounts_page(request):
+    user = request.user
+    accounts = user.accounts.all()
+    return render(request, 'expensetracker/accounts.html', context={
+        "accounts": accounts,
+    })
+
+ 
