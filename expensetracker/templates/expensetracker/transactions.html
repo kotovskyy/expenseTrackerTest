@@ -1,0 +1,70 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="{% static 'expensetracker/category_page.css' %}">
+        <link rel="stylesheet" href="{% static 'expensetracker/homepage.css' %}">
+        <title>Transactions</title>
+    </head>
+    <body>
+        <div id="main-navigation-container">
+            <div></div>
+            <div class="navigation-menu-container">
+                <div class="navigation-link-container">
+                    <a class="navigation-link" href="{% url 'expensetracker_homepage' %}">Categories</a>
+                </div>
+                <div class="navigation-link-container">
+                    <a class="navigation-link" href="{% url 'expensetracker_accounts-page' %}">Accounts</a>
+                </div>
+                <div class="navigation-link-container">
+                    <a class="navigation-link" href="{% url 'expensetracker_transactions-page' %}">Transactions</a>
+                </div>
+            </div>
+
+            <div class="logout-menu-container">
+                <a class="navigation-link" href="{% url 'users_user-logout' %}">Logout</a>
+            </div>
+        </div>
+        
+        <h2>Transactions:</h2>
+        <div class="category-transactions-container-outer">
+
+            {% for transaction in transactions %}
+
+            <div class="category-transaction-container-inner">
+
+                <div class="transaction-data-container">
+
+                    <div class="transaction-category-icon">
+                        <img class="category-icon" src="{% static 'svg/bus-front.svg' %}" alt="Example category image">
+                    </div>
+
+                    <div class="transaction-category-account">
+
+                        <div class="transaction-category-name">
+                            {{ category.name }}
+                        </div>
+
+                        <div class="transaction-account-name">
+                            {{ transaction.account.name }}
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="transaction-amount-container">
+                    {{ transaction.amount }} {{ transaction.currency.code }}
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+    
+
+    </body>
+</html>

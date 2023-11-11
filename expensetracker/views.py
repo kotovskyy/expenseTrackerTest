@@ -81,4 +81,10 @@ def accounts_page(request):
         "accounts": accounts,
     })
 
- 
+
+def transactions_page(request):
+    user = request.user
+    transactions = user.transactions.all()
+    return render(request, 'expensetracker/transactions.html', context={
+      "transactions": transactions,  
+    })
