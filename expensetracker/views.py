@@ -11,6 +11,20 @@ def convert_amount(amount, currency, main_currency):
     rate = currency.exchange_rates[main_currency.code]
     rate = Decimal(str(rate))
     return round(amount * rate, 2)
+
+def transaction_dates(transactions):
+    dates = [
+        (d[0].strftime("%A"),
+        d[0].day,
+        d[0].strftime("%B"),
+        d[0].year,
+        d[0]) for d in transactions.distinct().values_list("date")]
+    date_transactions = {date:[] for date in dates}
+    for date in dates:
+        for t in transactions:
+            if t.date == date[4]:
+                date_transactions[date].append(t)
+    return date_transactions
     
 # Create your views here.
 def index(request):
@@ -102,26 +116,12 @@ def category_page(request, category_id):
             })
                    
     form = AddTransactionForm(user=user)
-    dates = [
-        (d[0].strftime("%A"),
-         d[0].day,
-         d[0].strftime("%B"),
-         d[0].year,
-         d[0]) for d in transactions.distinct().values_list("date")]
-    
-    date_transactions = {date:[] for date in dates}
-    for date in dates:
-        for t in transactions:
-            if t.date == date[4]:
-                date_transactions[date].append(t)
-    
+    date_transactions = transaction_dates(transactions)
     
     return render(request, 'expensetracker/category.html', context={
         "category": category,
         "form": form,
-        "transactions": transactions,
         "date_transactions": date_transactions,
-        "dates": dates,
     })
     
 def accounts_page(request):
@@ -138,9 +138,12 @@ def transactions_page(request):
     user = request.user
     if not user.is_authenticated:
         return redirect(index)
-    transactions = user.transactions.all()
+    transactions = user.transactions.all().order_by('date').reverse()    
+    date_transactions = transaction_dates(transactions)
+                
     return render(request, 'expensetracker/transactions.html', context={
-      "transactions": transactions,  
+        "transactions": transactions,
+        "date_transactions": date_transactions,
     })
     
 def transaction_edit_page(request, transaction_id):
