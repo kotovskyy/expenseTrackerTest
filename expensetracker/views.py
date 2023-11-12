@@ -13,6 +13,9 @@ def convert_amount(amount, currency, main_currency):
     
 # Create your views here.
 def index(request):
+    user = request.user
+    if user.is_authenticated:
+        return redirect(homepage)
     return render(request, 'expensetracker/index.html', context={
         "accounts":Account.objects.all(),
         "categories":Category.objects.all(),
@@ -20,6 +23,8 @@ def index(request):
     
 def homepage(request):
     user = request.user
+    if not user.is_authenticated:
+        return redirect(index)
     transactions = Transaction.objects.filter(user=user)
     total_expenses = transactions.filter(transaction_type="E")
     total_expenses = sum([t.amount for t in total_expenses])
@@ -35,6 +40,8 @@ def homepage(request):
     
 def category_page(request, category_id):
     user = request.user
+    if not user.is_authenticated:
+        return redirect(index)
     category = Category.objects.get(id=category_id)
     transactions = Transaction.objects.filter(user=user, category=category)
     if request.method == "POST":
@@ -83,6 +90,8 @@ def category_page(request, category_id):
     
 def accounts_page(request):
     user = request.user
+    if not user.is_authenticated:
+        return redirect(index)
     accounts = user.accounts.all()
     return render(request, 'expensetracker/accounts.html', context={
         "accounts": accounts,
@@ -91,6 +100,8 @@ def accounts_page(request):
 
 def transactions_page(request):
     user = request.user
+    if not user.is_authenticated:
+        return redirect(index)
     transactions = user.transactions.all()
     return render(request, 'expensetracker/transactions.html', context={
       "transactions": transactions,  
