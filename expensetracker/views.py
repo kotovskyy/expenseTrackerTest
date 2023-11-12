@@ -4,6 +4,13 @@ from .models import Account, Category, Settings, Transaction
 
 from .forms import AddTransactionForm
 
+from decimal import Decimal
+
+def convert_amount(amount, currency, main_currency):
+    rate = currency.exchange_rates[main_currency.code]
+    rate = Decimal(str(rate))
+    return round(amount * rate, 2)
+    
 # Create your views here.
 def index(request):
     return render(request, 'expensetracker/index.html', context={
