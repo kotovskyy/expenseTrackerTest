@@ -5,9 +5,29 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="{% static 'expensetracker/category_page.css' %}">
+        <link rel="stylesheet" href="{% static 'expensetracker/homepage.css' %}">
         <title>Expense Tracker</title>
     </head>
     <body>
+        <div id="main-navigation-container">
+            <div></div>
+            <div class="navigation-menu-container">
+                <div class="navigation-link-container">
+                    <a class="navigation-link" href="{% url 'expensetracker_homepage' %}">Categories</a>
+               </div>
+               <div class="navigation-link-container">
+                  <a class="navigation-link" href="{% url 'expensetracker_accounts-page' %}">Accounts</a>
+               </div>
+               <div class="navigation-link-container">
+                  <a class="navigation-link" href="{% url 'expensetracker_transactions-page' %}">Transactions</a>
+               </div>
+            </div>
+
+            <div class="logout-menu-container">
+                <a class="navigation-link" href="{% url 'users_user-logout' %}">Logout</a>
+            </div>
+        </div>
+
         This is a page for {{ category.name }} category. Total: {{ category.total }}.
         <form action="{% url 'expensetracker_category-page' category.id %}" method="post">
             {% csrf_token %}
@@ -35,6 +55,7 @@
 
             {% for transaction in transactions %}
 
+            <a href="{% url 'expensetracker_transaction-edit-page' transaction.id %}">
             <div class="category-transaction-container-inner">
 
                 <div class="transaction-data-container">
@@ -53,6 +74,10 @@
                             {{ transaction.account.name }}
                         </div>
 
+                        <div class="transaction-description">
+                            {{ transaction.description }}
+                        </div>
+
                     </div>
 
                 </div>
@@ -62,6 +87,7 @@
                 </div>
 
             </div>
+            </a>
 
             {% endfor %}
 
