@@ -17,8 +17,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 
+from expensetracker import views as exp_views
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('expensetracker/', include('expensetracker.urls')),
     path('users/', include('users.urls')),
+    path('', exp_views.index, name="expensetracker_index")
 ]
