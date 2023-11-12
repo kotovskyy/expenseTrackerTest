@@ -33,6 +33,7 @@
 
             {% for transaction in transactions %}
 
+            <a href="{% url 'expensetracker_transaction-edit-page' transaction.id %}">
             <div class="category-transaction-container-inner">
 
                 <div class="transaction-data-container">
@@ -44,11 +45,15 @@
                     <div class="transaction-category-account">
 
                         <div class="transaction-category-name">
-                            {{ category.name }}
+                            {{ transaction.category.name }}
                         </div>
 
                         <div class="transaction-account-name">
                             {{ transaction.account.name }}
+                        </div>
+
+                        <div class="transaction-description">
+                            {{ transaction.description }}
                         </div>
 
                     </div>
@@ -60,6 +65,7 @@
                 </div>
 
             </div>
+            </a>
 
             {% endfor %}
 
