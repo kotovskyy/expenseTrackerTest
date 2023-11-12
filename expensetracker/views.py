@@ -61,7 +61,7 @@ def category_page(request, category_id):
     if not user.is_authenticated:
         return redirect(index)
     category = Category.objects.get(id=category_id)
-    transactions = Transaction.objects.filter(user=user, category=category)
+    transactions = category.transactions.all().order_by('date').reverse()
     if request.method == "POST":
         form = AddTransactionForm(user, request.POST)
         if form.is_valid():
