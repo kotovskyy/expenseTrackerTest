@@ -102,6 +102,18 @@ def category_page(request, category_id):
             })
                    
     form = AddTransactionForm(user=user)
+    
+    # get all dates when there were any transactions
+    # date manipulation:
+    # s = f"{d.strftime("%A")}, {d.day} {d.strftime("%B")} {d.year}"
+    
+    
+    dates = [
+        (d[0].strftime("%A"),
+         d[0].day,
+         d[0].strftime("%B"),
+         d[0].year) for d in transactions.distinct().values_list("date")]
+    
     return render(request, 'expensetracker/category.html', context={
         "category": category,
         "form": form,
