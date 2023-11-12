@@ -1,0 +1,62 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="{% static 'expensetracker/category_page.css' %}">
+        <link rel="stylesheet" href="{% static 'expensetracker/homepage.css' %}">
+        <script src="{% static 'scripts/delete_transaction.js' %}"></script>
+        <title>Edit transaction</title>
+    </head>
+    <body>
+        <div id="main-navigation-container">
+            <div></div>
+            <div class="navigation-menu-container">
+                <div class="navigation-link-container">
+                    <a class="navigation-link" href="{% url 'expensetracker_homepage' %}">Categories</a>
+                </div>
+                <div class="navigation-link-container">
+                    <a class="navigation-link" href="{% url 'expensetracker_accounts-page' %}">Accounts</a>
+                </div>
+                <div class="navigation-link-container">
+                    <a class="navigation-link" href="{% url 'expensetracker_transactions-page' %}">Transactions</a>
+                </div>
+            </div>
+
+            <div class="logout-menu-container">
+                <a class="navigation-link" href="{% url 'users_user-logout' %}">Logout</a>
+            </div>
+        </div>
+         
+        <h2>Transaction data:</h2>
+
+        <form action="{% url 'expensetracker_transaction-edit-page' transaction.id %}" method="post">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="signup-form-field">
+                <p>
+                    {% if field.errors %}
+                        <ul class="signup-error-list">
+                            {% for error in field.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    {{ field.label_tag }} {{ field }}
+                </p>
+            </div> 
+            {% endfor %}
+            <input type="submit" value="Edit">
+        </form>
+        <form action="{% url 'expensetracker_transaction-delete' transaction.id %}" id="deleteForm_{{ transaction.id }}" method="post">
+            {% csrf_token %}
+            <input type="submit" value="Delete" onclick="confirmDelete('{{ transaction.id }}')">
+        </form>
+
+
+        <hr>
+
+
+    </body>
+</html>
