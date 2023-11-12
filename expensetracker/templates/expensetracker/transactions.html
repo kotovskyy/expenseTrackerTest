@@ -31,44 +31,45 @@
         <h2>Transactions:</h2>
         <div class="category-transactions-container-outer">
 
-            {% for transaction in transactions %}
-
-            <a href="{% url 'expensetracker_transaction-edit-page' transaction.id %}">
-            <div class="category-transaction-container-inner">
-
-                <div class="transaction-data-container">
-
-                    <div class="transaction-category-icon">
-                        <img class="category-icon" src="{% static 'svg/bus-front.svg' %}" alt="Example category image">
-                    </div>
-
-                    <div class="transaction-category-account">
-
-                        <div class="transaction-category-name">
-                            {{ transaction.category.name }}
+            {% for d, t_list in date_transactions.items %}
+                <h3>{{ d.0 }}, {{ d.1 }} {{ d.2 }}, {{ d.3 }}</h3>
+                {% for transaction in t_list %}
+                    <a href="{% url 'expensetracker_transaction-edit-page' transaction.id %}">
+                        <div class="category-transaction-container-inner">
+            
+                            <div class="transaction-data-container">
+            
+                                <div class="transaction-category-icon">
+                                    <img class="category-icon" src="{% static 'svg/bus-front.svg' %}" alt="Example category image">
+                                </div>
+            
+                                <div class="transaction-category-account">
+            
+                                    <div class="transaction-category-name">
+                                        {{ category.name }}
+                                    </div>
+            
+                                    <div class="transaction-account-name">
+                                        {{ transaction.account.name }}
+                                    </div>
+            
+                                    <div class="transaction-description">
+                                        {{ transaction.description }}
+                                    </div>
+            
+                                </div>
+            
+                            </div>
+            
+                            <div class="transaction-amount-container">
+                                {{ transaction.amount }} {{ transaction.currency.code }}
+                            </div>
+            
                         </div>
-
-                        <div class="transaction-account-name">
-                            {{ transaction.account.name }}
-                        </div>
-
-                        <div class="transaction-description">
-                            {{ transaction.description }}
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <div class="transaction-amount-container">
-                    {{ transaction.amount }} {{ transaction.currency.code }}
-                </div>
-
-            </div>
-            </a>
-
+                    </a>
+                {% endfor %}
             {% endfor %}
-
+            
         </div>
     
 
