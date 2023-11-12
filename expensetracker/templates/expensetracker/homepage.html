@@ -32,7 +32,7 @@
 
             <div id="main-categories-container">
                 
-                {% for category in categories %}
+                {% for category, ctotal in cat_expenses %}
                     <a href="{% url 'expensetracker_category-page' category.id %}">
                         <div class="categories-grid-item">
                             <div class="category-cell-name">
@@ -42,7 +42,7 @@
                                 <img class="category-cell-icon" src="{% static 'svg/bus-front.svg' %}" alt="Example category image"> 
                             </div>
                             <div class="category-cell-total">
-                                {{ category.total }} {{ settings.main_currency.code }}
+                                {{ ctotal }} {{ settings.main_currency.code }}
                             </div>
                         </div>
                     </a>
