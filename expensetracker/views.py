@@ -68,7 +68,9 @@ def category_page(request, category_id):
             date = form.cleaned_data["date"]
             description = form.cleaned_data["description"]
             account_id = form.cleaned_data["account"]
+            currency_id = form.cleaned_data["currency"]
             account = user.accounts.filter(id=account_id).first()
+            currency = Currency.objects.filter(id=currency_id).first()
             
             transaction = Transaction.objects.create(
                 user=user,
@@ -76,7 +78,7 @@ def category_page(request, category_id):
                 category=category,
                 transaction_type=category.category_type,
                 amount=amount,
-                currency=user.settings.first().main_currency,
+                currency=currency,
                 date=date,
                 description=description
             )
