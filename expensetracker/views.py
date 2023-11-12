@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 
-from .models import Account, Category, Settings, Transaction
+from .models import Account, Category, Settings, Transaction, Currency
 
 from .forms import AddTransactionForm
 
@@ -31,9 +31,26 @@ def homepage(request):
     total_income = transactions.filter(transaction_type="I")
     total_income = sum([t.amount for t in total_income])
     
+    categories = Category.objects.filter(user=user)
+    settings = Settings.objects.get(user=user)
+    
+    categories_total = []
+    main_currency = user.settings.get(user=user).main_currency
+    
+    for c in categories:
+        transactions = c.transactions.all()
+        total = 0
+        for t in transactions:
+            total += convert_amount(t.amount, t.currency, main_currency)
+        categories_total.append(total)
+
+    total_expenses = sum(categories_total)
+    categories_expenses = list(zip(categories, categories_total))            
+    
     return render(request, 'expensetracker/homepage.html', context={
-        "categories":Category.objects.filter(user=user),
-        "settings": Settings.objects.get(user=user),
+        "categories":categories,
+        "cat_expenses":categories_expenses,
+        "settings": settings,
         "total_expenses": total_expenses,
         "total_income": total_income,
     })
