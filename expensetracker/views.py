@@ -3,7 +3,11 @@ from django.http import HttpResponseBadRequest
 
 from .models import Account, Category, Settings, Transaction, Currency
 
-from .forms import AddTransactionForm, EditTransactionForm
+from .forms import (AddTransactionForm,
+                    EditTransactionForm,
+                    EditAccountForm,
+                    AddCategoryForm,
+                    AddIncomeToAccountForm)
 
 from decimal import Decimal
 
@@ -245,4 +249,128 @@ def transaction_delete(request, transaction_id):
         category.save()
         transaction.delete()
         return redirect(transactions_page)
+    return HttpResponseBadRequest("Invalid request")
+
+def account_page(request, account_id):
+    user = request.user
+    if not user.is_authenticated:
+        return redirect(index)
+    
+    account = user.accounts.get(id=account_id)
+    transactions= account.transactions.all().order_by('date').reverse()
+    date_transactions = transaction_dates(transactions)
+    incomeform = AddIncomeToAccountForm(user)
+     
+    if request.method == 'POST':
+        editform = EditAccountForm(request.POST)
+        if editform.is_valid():
+            new_name = editform.cleaned_data['name']
+            new_balance = editform.cleaned_data['balance']
+            new_currency_id = editform.cleaned_data['currency']
+            new_description = editform.cleaned_data['description']
+            new_currency = Currency.objects.get(id=new_currency_id)
+            
+            account.name = new_name
+            account.balance = new_balance
+            account.currency = new_currency
+            account.description = new_description
+            
+            account.save()
+            
+            return redirect(accounts_page)
+            
+        else:
+            return render(request, 'expensetracker/account.html', context={
+                "account":account,
+                "editform": editform,
+                "incomeform": incomeform,
+                "date_transactions": date_transactions,
+            })
+        
+    
+    
+    editform = EditAccountForm()
+    
+    editform.fields['balance'].initial = account.balance
+    editform.fields['currency'].initial = account.currency.id
+    editform.fields['description'].initial = account.description
+    editform.fields['name'].initial = account.name
+    
+    
+    return render(request, 'expensetracker/account.html', context={
+        "account":account,
+        "editform": editform,
+        "incomeform": incomeform,
+        "date_transactions": date_transactions,
+    })
+
+def add_account_income(request, account_id):
+    user = request.user
+    if not user.is_authenticated:
+        return redirect(index)
+    
+    account = user.accounts.get(id=account_id)
+    
+    transactions= account.transactions.all().order_by('date').reverse()
+    date_transactions = transaction_dates(transactions)
+    
+    editform = EditAccountForm()
+    
+    editform.fields['balance'].initial = account.balance
+    editform.fields['currency'].initial = account.currency.id
+    editform.fields['description'].initial = account.description
+    editform.fields['name'].initial = account.name
+    
+    if request.method == 'POST':
+        form = AddIncomeToAccountForm(user, request.POST)
+        if form.is_valid():
+            amount = form.cleaned_data["amount"]
+            currency_id = form.cleaned_data["currency"]
+            category_id = form.cleaned_data["category"]
+            date = form.cleaned_data["date"]
+            description = form.cleaned_data["description"]
+            category = user.categories.get(id=category_id)
+            currency = Currency.objects.get(id=currency_id)
+            
+            transaction = Transaction.objects.create(
+                user=user,
+                account=account,
+                category=category,
+                transaction_type=category.category_type,
+                amount=amount,
+                currency=currency,
+                date=date,
+                description=description
+            )
+            
+            if account.currency == currency:
+                account.balance += amount
+            else:
+                converted_amount = convert_amount(amount, currency, account.currency)
+                account.balance += converted_amount
+            
+            main_currency = user.settings.get(user=user).main_currency
+            converted_amount = convert_amount(amount, currency, main_currency)
+            category.total += converted_amount
+            
+            account.save()
+            category.save()
+            
+            return render(request, 'expensetracker/account.html', context={
+                "account":account,
+                "editform": editform,
+                "incomeform": AddIncomeToAccountForm(user),
+                "date_transactions": date_transactions,
+            })
+            
+            
+        else:
+            return render(request, 'expensetracker/account.html', context={
+                "account":account,
+                "editform": editform,
+                "incomeform": form,
+                "date_transactions": date_transactions,
+            })
+    
+        
     return HttpResponseBadRequest("Invalid request")
