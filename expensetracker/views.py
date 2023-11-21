@@ -181,6 +181,7 @@ def category_page(request, category_id):
         "category": category,
         "form": form,
         "date_transactions": date_transactions,
+        "ntransactions": transactions.count(),
     })
     
 def accounts_page(request):
