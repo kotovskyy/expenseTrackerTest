@@ -10,6 +10,8 @@ from .forms import (AddTransactionForm,
                     AddIncomeToAccountForm)
 
 from decimal import Decimal
+import datetime
+import calendar
 
 def convert_amount(amount, currency, main_currency):
     rate = currency.exchange_rates[main_currency.code]
@@ -44,11 +46,21 @@ def homepage(request):
     user = request.user
     if not user.is_authenticated:
         return redirect(index)
-    transactions = Transaction.objects.filter(user=user)
-    total_expenses = transactions.filter(transaction_type="E")
-    total_expenses = sum([t.amount for t in total_expenses])
-    total_income = transactions.filter(transaction_type="I")
-    total_income = sum([t.amount for t in total_income])
+
+    # get period of time (month) to filter data
+    month_number = int(request.GET.get('month', datetime.date.today().month))
+    year = int(request.GET.get('year', datetime.date.today().year))
+    month_name = calendar.month_name[month_number]
+    
+    
+    income_transactions = Transaction.objects.filter(
+        user=user,
+        date__month=month_number,
+        date__year=year,
+        transaction_type="I"
+    )
+
+    total_income = sum([t.amount for t in income_transactions])
     
     categories = Category.objects.filter(user=user, category_type="E").order_by('id')
     settings = Settings.objects.get(user=user)
@@ -57,7 +69,10 @@ def homepage(request):
     main_currency = user.settings.get(user=user).main_currency
     
     for c in categories:
-        transactions = c.transactions.all()
+        transactions = c.transactions.filter(
+            date__month=month_number,
+            date__year=year
+        )
         total = 0
         for t in transactions:
             total += convert_amount(t.amount, t.currency, main_currency)
@@ -72,6 +87,8 @@ def homepage(request):
         "settings": settings,
         "total_expenses": total_expenses,
         "total_income": total_income,
+        "month_name": month_name,
+        "year":year,
     })
 
 def add_new_category(request):
