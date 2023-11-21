@@ -239,6 +239,11 @@ def transaction_edit_page(request, transaction_id):
             transaction.category = new_category
 
             transaction.save()
+        else:
+            return render(request, 'expensetracker/transaction.html', context={
+                'transaction': transaction,
+                'form': form,
+            })
             
     
     form = EditTransactionForm(user=user)
