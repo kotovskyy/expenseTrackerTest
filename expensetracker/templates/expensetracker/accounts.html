@@ -33,25 +33,27 @@
 
             {% for account in accounts %}
 
-            <div class="account-container-inner">
+            <a href="{% url 'expensetracker_account-page' account.id %}">
+                <div class="account-container-inner">
 
-                <div class="account-data-container">
+                    <div class="account-data-container">
 
-                    <div class="account-icon-container">
-                        <img class="account-icon" src="{% static 'svg/account-icon.svg' %}" alt="Example account image">
+                        <div class="account-icon-container">
+                            <img class="account-icon" src="{% static 'svg/account-icon.svg' %}" alt="Example account image">
+                        </div>
+
+                        <div class="account-name">
+                                {{ account.name }}  
+                        </div>
+
                     </div>
 
-                    <div class="account-name">
-                            {{ account.name }}  
+                    <div class="account-balance-container">
+                        {{ account.balance }} {{ account.currency.code }}
                     </div>
 
                 </div>
-
-                <div class="account-balance-container">
-                    {{ account.balance }} {{ account.currency.code }}
-                </div>
-
-            </div>
+            </a>
 
             {% endfor %}
 
