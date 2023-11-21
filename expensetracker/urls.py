@@ -21,4 +21,6 @@ urlpatterns = [
          name='expensetracker_add-account-income'),
     path('homepage/addcategory/', views.add_new_category, 
          name='expensetracker_add-new-category'),
+    path('homepage/<int:category_id>/delete/', views.remove_category,
+         name='expensetracker_category-delete'),
 ]
