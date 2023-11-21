@@ -96,7 +96,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
 }
 
 .central-informational-container-inner {
@@ -124,4 +124,15 @@
     color: green; /* Background color for the income amount */
     padding: 20px; /* Adjust the padding as needed */
     margin: 10px; /* Adjust the margin as needed */
+}
+
+.add-new-category-container {
+    border: 2px solid black;
+    padding: 10px  15px 10px 15px;
+    border-radius: 10px;
+}
+
+.add-new-category-link {
+    text-decoration: none;
+    color: black;
 }
