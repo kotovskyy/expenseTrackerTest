@@ -6,7 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="{% static 'expensetracker/category_page.css' %}">
         <link rel="stylesheet" href="{% static 'expensetracker/homepage.css' %}">
-        <script src="{% static 'scripts/delete_transaction.js' %}"></script>
+        <script src="{% static 'scripts/delete_operations.js' %}"></script>
         <title>Edit transaction</title>
     </head>
     <body>
@@ -49,9 +49,9 @@
             {% endfor %}
             <input type="submit" value="Edit">
         </form>
-        <form action="{% url 'expensetracker_transaction-delete' transaction.id %}" id="deleteForm_{{ transaction.id }}" method="post">
+        <form action="{% url 'expensetracker_transaction-delete' transaction.id %}" id="deleteTransactionForm_{{ transaction.id }}" method="post">
             {% csrf_token %}
-            <input type="submit" value="Delete" onclick="confirmDelete('{{ transaction.id }}')">
+            <input type="button" value="Delete" onclick="deleteTransaction('{{ transaction.id }}')">
         </form>
 
 
