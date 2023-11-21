@@ -73,6 +73,34 @@ def homepage(request):
         "total_expenses": total_expenses,
         "total_income": total_income,
     })
+
+def add_new_category(request):
+    user = request.user
+    if not user.is_authenticated:
+        return redirect(index)
+    if request.method == "POST":
+        form = AddCategoryForm(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data["name"]
+            cat_type = form.cleaned_data["category_type"]
+            total = Decimal("0")
+            
+            category = Category.objects.create(
+                user=user,
+                name=name,
+                category_type=cat_type,
+                total=total
+            )
+            
+        else:
+            return render(request, 'expensetracker/add_category_page.html', context={
+                "form": form,
+            })
+            
+    form = AddCategoryForm()
+    return render(request, 'expensetracker/add_category_page.html', context={
+        "form": form,
+    })
     
 def category_page(request, category_id):
     user = request.user
