@@ -102,6 +102,33 @@ def add_new_category(request):
         "form": form,
     })
     
+def remove_category(request, category_id):
+    user = request.user
+    if not user.is_authenticated:
+        return redirect(index)
+    main_currency = user.settings.get(user=user).main_currency
+    category = user.categories.get(id=category_id)
+    transactions = category.transactions.all()
+    if request.method == 'POST':
+        for t in transactions:
+            account = t.account
+            amount = t.amount
+            currency = t.currency
+            amount_converted = convert_amount(amount, currency, main_currency)
+            
+            sign = -1 if t.transaction_type == "I" else 1
+            
+            account.balance += sign * amount_converted
+
+            account.save()
+            
+            t.delete()
+        
+        category.delete()
+        return redirect(homepage)
+    
+    return HttpResponseBadRequest("Invalid request")
+    
 def category_page(request, category_id):
     user = request.user
     if not user.is_authenticated:
