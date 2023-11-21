@@ -64,7 +64,7 @@
     height: 50px;
     display: grid;
     grid-template-columns: 25fr 50fr 25fr;
-    margin-bottom: 30px;
+    margin-bottom: 10px;
 }
 
 .navigation-menu-container {
@@ -135,4 +135,25 @@
 .add-new-category-link {
     text-decoration: none;
     color: black;
+}
+
+.choose-period-container {
+    width: 100%;
+    height: 50px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.choose-prev-period-button, .choose-next-period-button {
+    width: 40px;
+}
+.period {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    margin: 5px 15px 5px 15px;
+    width: 200px;
+    text-align: center;
 }
