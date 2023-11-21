@@ -50,7 +50,7 @@ def homepage(request):
     total_income = transactions.filter(transaction_type="I")
     total_income = sum([t.amount for t in total_income])
     
-    categories = Category.objects.filter(user=user).order_by('id')
+    categories = Category.objects.filter(user=user, category_type="E").order_by('id')
     settings = Settings.objects.get(user=user)
     
     categories_total = []
