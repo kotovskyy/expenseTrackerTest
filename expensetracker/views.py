@@ -160,7 +160,7 @@ def accounts_page(request):
     user = request.user
     if not user.is_authenticated:
         return redirect(index)
-    accounts = user.accounts.all()
+    accounts = user.accounts.all().order_by('id')
     return render(request, 'expensetracker/accounts.html', context={
         "accounts": accounts,
     })
